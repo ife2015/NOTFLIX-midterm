@@ -1,11 +1,11 @@
 const { use } = require('bcrypt/promises');
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 
 module.exports = (db) => {
-  const addItem = function(item, user) {
+  const addItem = function (item, user) {
     // first check if item is already in database
-    const queryCheck = `SELECT * FROM items WHERE name = $1;`; 
+    const queryCheck = `SELECT * FROM items WHERE name = $1;`;
 
     return db.query(queryCheck, [item.name])
       .then(itemData => {
@@ -24,15 +24,15 @@ module.exports = (db) => {
               VALUES `
               const itemCatValues = [movie_id];
               let counter = 2;
-              for (let id = 0; id < item.multi.length ; id++) {
+              for (let id = 0; id < item.multi.length; id++) {
                 if (id === item.multi.length - 1) {
                   queryInsert += `($1, $${counter})\n`;
                   itemCatValues.push(item.multi[id]);
-                  counter ++;
+                  counter++;
                 } else {
                   queryInsert += `($1, $${counter}),\n`;
                   itemCatValues.push(item.multi[id]);
-                  counter ++;
+                  counter++;
                 }
               };
               queryInsert += `RETURNING *;`;
@@ -40,37 +40,37 @@ module.exports = (db) => {
                 .then(res => {
                   return res.rows;
                 });
-              });
+            });
         } else {
-            return null;
+          return null;
         }
-    });
+      });
 
   };
 
-  const getCategories = function (){
-    return db.query (`SELECT * FROM categories;`)
+  const getCategories = function () {
+    return db.query(`SELECT * FROM categories;`)
       .then(res => {
         return res.rows;
       });
   };
-  
+
   router.get('/', (req, res) => {
-    if (!req.session.user_info){
+    if (!req.session.user_info) {
       res.redirect('/login')
     } else if (req.session.user_info.is_admin) {
       getCategories()
         .then(catData => {
           templateVar = {
-            user : req.session.user_info,
-            data : catData
+            user: req.session.user_info,
+            data: catData
           }
           res.render('add_item', templateVar);
         });
     } else {
       res.redirect('/')
     }
-  }).post('/',(req,res) => {
+  }).post('/', (req, res) => {
     const item = req.body;
     const user_id = req.session.user_info.id;
     addItem(item, user_id)
@@ -81,9 +81,9 @@ module.exports = (db) => {
         }
         res.redirect('/');
       })
-      .catch(console.log);
-    });
-  
-  
+      .catch(e => console.log(e));
+  });
+
+
   return router;
 };

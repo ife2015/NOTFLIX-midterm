@@ -1,14 +1,14 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const bcrypt = require('bcrypt');
 
 module.exports = (db) => {
 
-  const addUser = function(user) {
+  const addUser = function (user) {
 
     // Checks if user is already in database
-    const queryCheck = `SELECT * FROM users WHERE email = $1;`; 
-    const userEmail = [user.email]; 
+    const queryCheck = `SELECT * FROM users WHERE email = $1;`;
+    const userEmail = [user.email];
 
     return db.query(queryCheck, userEmail)
       .then(userData => {
@@ -16,10 +16,10 @@ module.exports = (db) => {
           return null;
         } else {
 
-        const queryString = `INSERT INTO users (name, password, email, phone_number) VALUES ($1, $2, $3, $4) RETURNING *;`;
+          const queryString = `INSERT INTO users (name, password, email, phone_number) VALUES ($1, $2, $3, $4) RETURNING *;`;
 
-        const values = [user.username, user.password, user.email, user.phone];
-        return db.query(queryString, values).then(res => res.rows[0]);
+          const values = [user.username, user.password, user.email, user.phone];
+          return db.query(queryString, values).then(res => res.rows[0]);
         }
       });
   };
@@ -31,10 +31,10 @@ module.exports = (db) => {
     } else {
       res.render('register_url');
     }
-  }).post('/',(req,res) => {
-      const user = req.body;
-      user.password = bcrypt.hashSync(user.password, 12);
-      // database contains unique emails
+  }).post('/', (req, res) => {
+    const user = req.body;
+    user.password = bcrypt.hashSync(user.password, 12);
+    // database contains unique emails
     addUser(user)
       .then(user => {
         if (!user) {

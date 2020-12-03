@@ -43,7 +43,6 @@ module.exports = (db) => {
     const queryString = `
     SELECT DISTINCT item_id FROM favorite_items WHERE user_id = $1;;
     `;
-    console.log(req.session.user_info.id);
     const value = [req.session.user_info.id];
     db.query(queryString, value)
       .then((data) => {

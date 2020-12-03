@@ -1,24 +1,24 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 
 
 module.exports = (db) => {
-  const userOrder = function(userId) {
-          const queryString = `
+  const userOrder = function (userId) {
+    const queryString = `
           SELECT orders.id, items.price,items.name as movie, users.name, users.email 
           FROM users
           JOIN orders ON users.id = user_id
           JOIN items ON orders.item_id = items.id
           WHERE users.id = $1;
           `;
-          const values = [userId];
-          return db.query(queryString, values)
-            .then(res => {
-              return res.rows;
-            });
+    const values = [userId];
+    return db.query(queryString, values)
+      .then(res => {
+        return res.rows;
+      });
   };
 
-  const DeleteOrder = function(orderId) {
+  const DeleteOrder = function (orderId) {
     const queryString = `
     DELETE 
     FROM orders
@@ -29,7 +29,7 @@ module.exports = (db) => {
       .then(res => {
         return;
       });
-};
+  };
 
   const totalPrice = function (order) {
     let total = 0;
@@ -42,13 +42,12 @@ module.exports = (db) => {
   router.get('/', (req, res) => {
     const user_id = req.session.user_info.id;
     userOrder(user_id)
-    .then(order => {
+      .then(order => {
         const templateVar = {
-          user : req.session.user_info,
-          orders : order,
-          total : totalPrice(order)
+          user: req.session.user_info,
+          orders: order,
+          total: totalPrice(order)
         }
-        console.log(order);
         res.render('cart', templateVar);
       });
 

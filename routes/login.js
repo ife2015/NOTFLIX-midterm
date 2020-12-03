@@ -1,10 +1,10 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const bcrypt = require('bcrypt');
 
 module.exports = (db) => {
   // login function - authenticates user
-  const login = function(email, password) {
+  const login = function (email, password) {
     const queryString = `
     SELECT * FROM users 
     WHERE email = $1;
@@ -30,9 +30,8 @@ module.exports = (db) => {
       res.render('login_url');
     }
   })
-    .post('/', (req,res) => {
+    .post('/', (req, res) => {
       const { email, password } = req.body;
-      console.log(req.params);
       login(email, password)
         .then(user => {
           if (!user) {
@@ -46,7 +45,7 @@ module.exports = (db) => {
           res.send(e)
         });
     });
- 
+
 
   return router;
 };
