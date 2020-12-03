@@ -72,7 +72,7 @@ app.use("/api/items", itemsRoutes(db));
 app.use("/add", addItemRoutes(db));
 app.use("/delete", deleteItem(db));
 app.use('/categories', categoriesRoutes(db));
-app.use('/favorite',favoriteRoutes(db));
+app.use('/favorite', favoriteRoutes(db));
 app.use("/cart", cartRoute(db));
 app.use("/submit", submitRoute(db));
 app.use('/review', reviewRoutes(db));
@@ -81,17 +81,17 @@ app.use('/review', reviewRoutes(db));
 // Warning: avoid creating more routes in this file!
 // Separate them into separate routes files (see above).
 app.get("/", (req, res) => {
-  if (!req.session.user_info){
+  if (!req.session.user_info) {
     templateVar = {
-      user : {
-        name : null,
+      user: {
+        name: null,
         is_admin: null
       }
     }
     res.render("index", templateVar);
   } else {
     templateVar = {
-      user : req.session.user_info
+      user: req.session.user_info
     }
     res.render("index", templateVar);
   }
